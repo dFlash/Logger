@@ -22,7 +22,7 @@ public class SimpleLogger implements Logger {
 	 * @param clazz
 	 */
 	public SimpleLogger(@SuppressWarnings("rawtypes") Class clazz) {
-		this.className = clazz.getName();
+		this.className = clazz.getSimpleName();
 	}
 
 	/**
@@ -46,8 +46,11 @@ public class SimpleLogger implements Logger {
 		for (Appender appender : appenders) {
 			String currentTime = LocalDate.now().toString() + LocalTime.now().toString();
 			appender.write(className);
+			appender.write(Utils.WORD_SEPARATOR);
 			appender.write(currentTime);
+			appender.write(Utils.WORD_SEPARATOR);
 			appender.write(level.name());
+			appender.write(Utils.WORD_SEPARATOR);
 			appender.write(message);
 			appender.write(Utils.getLineSeparator());
 		}

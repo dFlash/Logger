@@ -68,6 +68,15 @@ public abstract class LoggerFactory {
 			throw new LoggerException(message);
 		}
 	}
+	
+	/**
+	 * Returns root logger for configuring
+	 * 
+	 * @return root logger for configuring
+	 */
+	public static Logger getRootLogger() {
+		return new RootLogger();
+	}
 
 	/**
 	 * Returns logger implementation according to class

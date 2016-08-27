@@ -7,6 +7,8 @@ package com.maliavin.simplelogger;
  *
  */
 public class Utils {
+	
+	public static final String WORD_SEPARATOR = " ";
 
 	private static final String WINDOWS_LINE_SEPARATOR = "\r\n";
 

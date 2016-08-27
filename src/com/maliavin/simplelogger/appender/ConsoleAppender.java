@@ -1,5 +1,7 @@
 package com.maliavin.simplelogger.appender;
 
+import java.io.Console;
+
 /**
  * Implementation of console appender
  * 
@@ -13,8 +15,13 @@ public class ConsoleAppender implements Appender{
 	 */
 	@Override
 	public void write(String message) {
-		System.out.println("console");
-		
+		Console console = System.console();
+		if (console == null){
+			System.out.print(message);
+		}
+		else{
+			console.writer().write(message);
+		}
 	}
 
 }
