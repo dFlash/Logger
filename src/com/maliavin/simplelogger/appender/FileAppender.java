@@ -60,7 +60,7 @@ public class FileAppender implements Appender {
 				file.createNewFile();
 			}
 			
-			output.write(message+" ");
+			output.write(message);
 
 		} catch (IOException e) {
 			throw new LoggerException("Exception during writing to file", e);
