@@ -43,6 +43,10 @@ public class SimpleLogger implements Logger {
 	 */
 	@Override
 	public void log(Level level, String message) {
+		logMessage(level, message, className);
+	}
+	
+	private static synchronized void logMessage(Level level, String message, String className) {
 		for (Appender appender : appenders) {
 			String currentTime = LocalDate.now().toString() + LocalTime.now().toString();
 			appender.write(className);
@@ -54,7 +58,6 @@ public class SimpleLogger implements Logger {
 			appender.write(message);
 			appender.write(Utils.getLineSeparator());
 		}
-
 	}
 
 }
