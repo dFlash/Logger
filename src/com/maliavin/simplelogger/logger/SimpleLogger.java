@@ -2,6 +2,8 @@ package com.maliavin.simplelogger.logger;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.maliavin.simplelogger.Utils;
 import com.maliavin.simplelogger.appender.Appender;
@@ -13,6 +15,8 @@ import com.maliavin.simplelogger.appender.Appender;
  *
  */
 public class SimpleLogger implements Logger {
+	
+	private static ExecutorService pool = Executors.newCachedThreadPool();
 
 	private String className;
 
@@ -46,18 +50,52 @@ public class SimpleLogger implements Logger {
 		logMessage(level, message, className);
 	}
 	
-	private static synchronized void logMessage(Level level, String message, String className) {
-		for (Appender appender : appenders) {
-			String currentTime = LocalDate.now().toString() + LocalTime.now().toString();
-			appender.write(className);
-			appender.write(Utils.WORD_SEPARATOR);
-			appender.write(currentTime);
-			appender.write(Utils.WORD_SEPARATOR);
-			appender.write(level.name());
-			appender.write(Utils.WORD_SEPARATOR);
-			appender.write(message);
-			appender.write(Utils.getLineSeparator());
+	private static void logMessage(Level level, String message, String className) {
+		pool.execute(new WriterTask(level.name(), message, className));
+	}
+	
+	/**
+	 * Task, which implements writing message to log
+	 * 
+	 * @author Dmitriy
+	 *
+	 */
+	private static class WriterTask implements Runnable {
+
+		private String levelName;
+
+		private String message;
+		
+		private String className;
+
+		public WriterTask(String levelName, String message, String className) {
+			this.levelName = levelName;
+			this.message = message;
+			this.className = className;
 		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.lang.Runnable#run()
+		 */
+		@Override
+		public void run() {
+			synchronized (SimpleLogger.class) {
+				for (Appender appender : appenders) {
+					String currentTime = LocalDate.now().toString() + LocalTime.now().toString();
+					appender.write(className);
+					appender.write(Utils.WORD_SEPARATOR);
+					appender.write(currentTime);
+					appender.write(Utils.WORD_SEPARATOR);
+					appender.write(levelName);
+					appender.write(Utils.WORD_SEPARATOR);
+					appender.write(message);
+					appender.write(Utils.getLineSeparator());
+				}
+			}
+		}
+
 	}
 
 }
